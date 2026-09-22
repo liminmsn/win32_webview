@@ -59,7 +59,7 @@ inline WNDCLASSEXW CreateMainWNDCLASSEXW(LPCWSTR CLASS_NAME, HINSTANCE hInstance
 	wc.lpfnWndProc = [](HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) ->LRESULT {
 		switch (uMsg) {
 		case WM_CLOSE:
-			if (MessageBoxW(hwnd, L"确定要退出程序吗？", L"退出确认", MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) == IDYES)
+			if (MessageBoxW(hwnd, L"确定要退出程序吗？", L"提示", MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) == IDYES)
 			{
 				DestroyWindow(hwnd);
 			}
