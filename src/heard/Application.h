@@ -6,6 +6,7 @@ public:
 	AppLication(HWND hwnd);
 	~AppLication();
 	bool InitWebView();
+	void Resize(int width, int height);
 private:
 	HWND hwnd = nullptr;
 	Microsoft::WRL::ComPtr<ICoreWebView2Environment> webViewEnvironment;

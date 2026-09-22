@@ -25,11 +25,14 @@ add_executable(
     ${SRC_FILES}
 )
 
-target_include_directories(win_pktmon PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}
-)
+target_include_directories(win_pktmon PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
 target_link_libraries(win_pktmon PRIVATE
     nlohmann_json::nlohmann_json
     unofficial::webview2::webview2
+)
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+    $<$<CONFIG:Debug>:APP_DEVELOPMENT>
+    $<$<CONFIG:Release>:APP_RELEASE>
 )

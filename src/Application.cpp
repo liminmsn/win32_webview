@@ -9,6 +9,14 @@ AppLication::~AppLication() {
 	}
 }
 
+void AppLication::Resize(int width, int height) {
+	if (!webViewController)
+		return;
+
+	RECT bounds{ 0, 0, width, height };
+	webViewController->put_Bounds(bounds);
+}
+
 bool AppLication::InitWebView() {
 	HRESULT hr = CreateCoreWebView2EnvironmentWithOptions(
 		nullptr,
@@ -34,7 +42,7 @@ bool AppLication::InitWebView() {
 							if (FAILED(hr))
 								return hr;
 
-							COREWEBVIEW2_COLOR color{0,0,0,0};
+							COREWEBVIEW2_COLOR color{ 0,0,0,0 };
 							controller2->put_DefaultBackgroundColor(color);
 
 							RECT bounds{};
@@ -44,9 +52,11 @@ bool AppLication::InitWebView() {
 							hr = webViewController->get_CoreWebView2(&webView);
 							if (FAILED(hr))
 								return hr;
-
+#if APP_DEVELOPMENT
+							webView->Navigate(L"http://localhost:5173/");
+#elif APP_RELEASE
 							webView->Navigate(L"https://www.baidu.com");
-
+#endif
 							return S_OK;
 						}).Get());
 			}).Get());
