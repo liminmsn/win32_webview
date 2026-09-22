@@ -1,11 +1,17 @@
-﻿#include "global.h"
+﻿#include <iostream>
+#include "global.h"
 #include "resources/resource.h"
 #include "src/core/Window.h"
+#include "src/heard/AppLication.h"
 
+using namespace std;
+
+unique_ptr<AppLication> application = nullptr;
 const wchar_t CLASS_NAME[] = L"WinPktmonWindow";
 const wchar_t APP_NAME[] = L"Pktmon抓包";
 const int width = 900;
 const int height = 700;
+
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR, int nCmdShow)
 {
@@ -27,6 +33,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR, int nCmdShow)
 
 	ShowWindow(hwnd, nCmdShow);
 	UpdateWindow(hwnd);
+
+	application = make_unique<AppLication>(hwnd);
+	application->InitWebView();
 
 	MSG msg{};
 	while (true)
