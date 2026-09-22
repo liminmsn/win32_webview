@@ -1,6 +1,6 @@
 ﻿#include "global.h"
 #include "resources/resource.h"
-#include "src/core/Window.hpp"
+#include "src/core/Window.h"
 
 const wchar_t CLASS_NAME[] = L"WinPktmonWindow";
 const wchar_t APP_NAME[] = L"Pktmon抓包";
