@@ -1,7 +1,8 @@
 #include "heard/AppLication.h"
+#include "heard/WebMessage.h"
+#include <iostream>
 
-using Microsoft::WRL::Callback;
-
+std::unique_ptr<WebMessage> webMessage;
 AppLication::AppLication(HWND hwnd) : hwnd(hwnd) {}
 AppLication::~AppLication() {
 	if (webViewController) {
@@ -10,18 +11,13 @@ AppLication::~AppLication() {
 }
 
 void AppLication::Resize(int width, int height) {
-	if (!webViewController)
-		return;
-
+	if (!webViewController) return;
 	RECT bounds{ 0, 0, width, height };
 	webViewController->put_Bounds(bounds);
 }
 
 bool AppLication::InitWebView() {
-	HRESULT hr = CreateCoreWebView2EnvironmentWithOptions(
-		nullptr,
-		nullptr,
-		nullptr,
+	HRESULT hr = CreateCoreWebView2EnvironmentWithOptions(nullptr, nullptr, nullptr,
 		Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
 			[this](HRESULT result, ICoreWebView2Environment* environment) -> HRESULT {
 				if (FAILED(result) || !environment)
@@ -37,7 +33,7 @@ bool AppLication::InitWebView() {
 
 							webViewController = controller;
 
-							Microsoft::WRL::ComPtr<ICoreWebView2Controller2> controller2;
+							ComPtr<ICoreWebView2Controller2> controller2;
 							HRESULT hr = webViewController.As(&controller2);
 							if (FAILED(hr))
 								return hr;
@@ -52,6 +48,8 @@ bool AppLication::InitWebView() {
 							hr = webViewController->get_CoreWebView2(&webView);
 							if (FAILED(hr))
 								return hr;
+
+							webMessage = std::make_unique<WebMessage>(this->webView, *this);
 #if APP_DEVELOPMENT
 							webView->Navigate(L"http://localhost:5173/");
 #elif APP_RELEASE

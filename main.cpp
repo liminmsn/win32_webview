@@ -7,7 +7,7 @@ const wchar_t APP_NAME[] = L"Pktmon抓包";
 const int width = 900;
 const int height = 700;
 
-
+std::unique_ptr<AppLication> application;
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR, int nCmdShow)
 {
 	WNDCLASSEXW wc = CreateMainWNDCLASSEXW(CLASS_NAME, hInstance);

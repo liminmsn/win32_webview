@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include <iostream>
 #include "src/heard/AppLication.h"
+#include <iostream>
 
-std::unique_ptr<AppLication> application = nullptr;
+extern std::unique_ptr<AppLication> application;
