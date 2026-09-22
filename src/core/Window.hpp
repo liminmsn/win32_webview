@@ -1,6 +1,5 @@
 #pragma once
 #include <Windows.h>
-#include "../../resources/resource.h"
 
 inline HWND CreateMainWindow(LPCWSTR CLASS_NAME, LPCWSTR APP_NAME, HINSTANCE hInstance, int widthDip, int heightDip) {
 	auto DipToPixel = [](int dip, UINT dpi) {
@@ -36,8 +35,6 @@ inline WNDCLASSEXW CreateMainWNDCLASSEXW(LPCWSTR CLASS_NAME, HINSTANCE hInstance
 	wc.style = CS_HREDRAW | CS_VREDRAW;
 	wc.hbrBackground = reinterpret_cast<HBRUSH>(COLOR_WINDOW + 1);
 	wc.hCursor = LoadCursorW(nullptr, MAKEINTRESOURCEW(IDC_ARROW));
-	wc.hIcon = static_cast<HICON>(LoadImageW(hInstance, MAKEINTRESOURCEW(IDI_APP_ICON), IMAGE_ICON, 256, 256, LR_DEFAULTCOLOR));
-	wc.hIconSm = static_cast<HICON>(LoadImageW(hInstance, MAKEINTRESOURCEW(IDI_APP_ICON), IMAGE_ICON, 32, 32, LR_DEFAULTCOLOR));
 
 	wc.lpfnWndProc = [](HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT {
 		switch (uMsg) {

@@ -1,4 +1,5 @@
 ﻿#include "global.h"
+#include "resources/resource.h"
 #include "src/core/Window.hpp"
 
 const wchar_t CLASS_NAME[] = L"WinPktmonWindow";
@@ -9,6 +10,8 @@ const int height = 700;
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR, int nCmdShow)
 {
 	WNDCLASSEXW wc = CreateMainWNDCLASSEXW(CLASS_NAME, hInstance);
+	wc.hIcon = static_cast<HICON>(LoadImageW(hInstance, MAKEINTRESOURCEW(IDI_APP_ICON), IMAGE_ICON, 256, 256, LR_DEFAULTCOLOR));
+	wc.hIconSm = static_cast<HICON>(LoadImageW(hInstance, MAKEINTRESOURCEW(IDI_APP_ICON), IMAGE_ICON, 32, 32, LR_DEFAULTCOLOR));
 	if (!RegisterClassExW(&wc))
 	{
 		MessageBoxW(nullptr, L"窗口类注册失败。", L"win_pktmon", MB_ICONERROR);
