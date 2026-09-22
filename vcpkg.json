@@ -1,0 +1,8 @@
+{
+  "name": "win-pktmon",
+  "version-string": "1.0.0",
+  "dependencies": [
+    "nlohmann-json",
+    "webview2"
+  ]
+}
