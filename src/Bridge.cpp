@@ -1,9 +1,10 @@
-#include "heard/WebMessage.h"
+#include "heard/Bridge.h"
 #include "heard/AppLication.h"
 #include "../core/MessageBox.hpp"
+#include "../core/ProcessPopup.hpp"
 #include <thread>
 
-std::string WebMessage::WideToUtf8(const wchar_t* value) {
+std::string Bridge::WideToUtf8(const wchar_t* value) {
 	if (!value)
 		return {};
 
@@ -16,14 +17,12 @@ std::string WebMessage::WideToUtf8(const wchar_t* value) {
 	return result;
 }
 
-WebMessage::WebMessage(ComPtr<ICoreWebView2>& webview, AppLication& app) : app(app) {
+Bridge::Bridge(ComPtr<ICoreWebView2>& webview, AppLication& app) : app(app) {
 	webview->add_WebMessageReceived(
 		Callback<ICoreWebView2WebMessageReceivedEventHandler>(
 			[this](ICoreWebView2*, ICoreWebView2WebMessageReceivedEventArgs* args) -> HRESULT {
 				LPWSTR message = nullptr;
-
 				HRESULT hr = args->get_WebMessageAsJson(&message);
-
 				if (SUCCEEDED(hr) && message) {
 					try {
 						std::string jsonString = WideToUtf8(message);
@@ -34,10 +33,8 @@ WebMessage::WebMessage(ComPtr<ICoreWebView2>& webview, AppLication& app) : app(a
 					catch (const nlohmann::json::exception& e) {
 						OutputDebugStringA(e.what());
 					}
-
 					CoTaskMemFree(message);
 				}
-
 				return S_OK;
 			}
 		).Get(),
@@ -45,11 +42,20 @@ WebMessage::WebMessage(ComPtr<ICoreWebView2>& webview, AppLication& app) : app(a
 	);
 }
 
-void WebMessage::Handle(Message& message) {
+void Bridge::Handle(Message& message) {
 	std::thread([this, message]()
 		{
-			if (ToString(MessageEnum::Info) == message.type) {
+			switch (MessageEnumFromString(message.type)) {
+			case MessageEnum::Info:
 				AlertInfo(StringToWString(message.data.message).c_str());
+				break;
+			case MessageEnum::Client:
+				ProcessInfo processInfo = ProcessPopup::Show(this->app.GetHwnd());
+				if (processInfo.pid > 0)
+				{
+					AlertInfo(processInfo.name.c_str());
+				}
+				break;
 			}
 		}
 	).detach();

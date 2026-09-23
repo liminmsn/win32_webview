@@ -1,8 +1,8 @@
 #include "heard/AppLication.h"
-#include "heard/WebMessage.h"
+#include "heard/Bridge.h"
 #include <iostream>
 
-std::unique_ptr<WebMessage> webMessage;
+std::unique_ptr<Bridge> bridge;
 AppLication::AppLication(HWND hwnd) : hwnd(hwnd) {}
 AppLication::~AppLication() {
 	if (webViewController) {
@@ -49,7 +49,7 @@ bool AppLication::InitWebView() {
 							if (FAILED(hr))
 								return hr;
 
-							webMessage = std::make_unique<WebMessage>(this->webView, *this);
+							bridge = std::make_unique<Bridge>(this->webView, *this);
 #if APP_DEVELOPMENT
 							webView->Navigate(L"http://localhost:5173/");
 #elif APP_RELEASE
