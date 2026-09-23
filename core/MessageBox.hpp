@@ -1,6 +1,6 @@
 #pragma once
-#include "../global.h"
 #include <Windows.h>
+#include "../global.h"
 
 inline static std::wstring StringToWString(const std::string& str, UINT codePage = CP_ACP) {
 	if (str.empty()) return L"";

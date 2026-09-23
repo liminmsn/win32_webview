@@ -10,7 +10,7 @@ export function App() {
           <p>We&apos;ve already added the button component for you.</p>
           <Button className="mt-2" onClick={() => {
             window.chrome?.webview.postMessage({
-              type: "info",
+              type: "client",
               data: {
                 message: "Hello C++"
               }

@@ -6,6 +6,7 @@
 #pragma comment(lib, "dwmapi.lib")
 #include <shellscalingapi.h>
 #pragma comment(lib, "Shcore.lib")
+#include "../global.h"
 #include "MessageBox.hpp"
 
 inline static HWND CreateMainWindow(LPCWSTR CLASS_NAME, LPCWSTR APP_NAME, HINSTANCE hInstance, int widthDip, int heightDip) {

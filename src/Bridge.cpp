@@ -1,7 +1,8 @@
+#include "../core/ProcessConnections.hpp"
 #include "heard/Bridge.h"
 #include "heard/AppLication.h"
-#include "../core/MessageBox.hpp"
 #include "../core/ProcessPopup.hpp"
+#include "../core/MessageBox.hpp"
 #include <thread>
 
 std::string Bridge::WideToUtf8(const wchar_t* value) {
@@ -43,20 +44,26 @@ Bridge::Bridge(ComPtr<ICoreWebView2>& webview, AppLication& app) : app(app) {
 }
 
 void Bridge::Handle(Message& message) {
-	std::thread([this, message]()
+	switch (MessageEnumFromString(message.type)) {
+	case MessageEnum::Info:
+		AlertInfo(StringToWString(message.data.message).c_str());
+		break;
+	case MessageEnum::Client:
+		ProcessInfo process = ProcessPopup::Show(this->app.GetHwnd());
+		if (process.pid != 0)
 		{
-			switch (MessageEnumFromString(message.type)) {
-			case MessageEnum::Info:
-				AlertInfo(StringToWString(message.data.message).c_str());
-				break;
-			case MessageEnum::Client:
-				ProcessInfo processInfo = ProcessPopup::Show(this->app.GetHwnd());
-				if (processInfo.pid > 0)
-				{
-					AlertInfo(processInfo.name.c_str());
-				}
-				break;
-			}
+			auto connections = GetProcessConnections(process.pid);
+			std::wstring text = FormatConnections(connections);
+
+			std::wstring title = L"进程连接信息 - PID " + std::to_wstring(process.pid);
+			MessageBoxW(this->app.GetHwnd(), text.c_str(), title.c_str(),
+				MB_OK | MB_ICONINFORMATION);
 		}
-	).detach();
+		break;
+	}
+	//std::thread([this, message]()
+	//	{
+	//		
+	//	}
+	//).detach();
 }
