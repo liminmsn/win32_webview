@@ -1,6 +1,6 @@
 ﻿cmake_minimum_required(VERSION 4.3)
 
-project(win_pktmon LANGUAGES CXX)
+project(win32_webview LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -17,7 +17,7 @@ find_package(unofficial-webview2 CONFIG REQUIRED)
 file(GLOB_RECURSE SRC_FILES  "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
 add_executable(
-    win_pktmon
+    win32_webview
     WIN32
     resources/resource.rc
     main.cpp
@@ -25,9 +25,9 @@ add_executable(
     ${SRC_FILES}
 )
 
-target_include_directories(win_pktmon PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(win32_webview PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
-target_link_libraries(win_pktmon PRIVATE
+target_link_libraries(win32_webview PRIVATE
     nlohmann_json::nlohmann_json
     unofficial::webview2::webview2
 )

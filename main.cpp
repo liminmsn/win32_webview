@@ -3,8 +3,8 @@
 #include "core/Window.hpp"
 #include "global.h"
 
-const wchar_t APP_NAME[] = L"Pktmon抓包";
-const wchar_t CLASS_NAME[] = L"WinPktmonWindow";
+const wchar_t APP_NAME[] = L"win32_webview";
+const wchar_t CLASS_NAME[] = L"win32_webview";
 const int width = 700;
 const int height = 600;
 std::unique_ptr<AppLication> application;
@@ -15,14 +15,14 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR, int nCmdShow)
 	wc.hIconSm = static_cast<HICON>(LoadImageW(hInstance, MAKEINTRESOURCEW(IDI_APP_ICON), IMAGE_ICON, 32, 32, LR_DEFAULTCOLOR));
 	if (!RegisterClassExW(&wc))
 	{
-		MessageBoxW(nullptr, L"窗口类注册失败。", L"win_pktmon", MB_ICONERROR);
+		MessageBoxW(nullptr, L"窗口类注册失败。", APP_NAME, MB_ICONERROR);
 		return 1;
 	}
 
 	HWND hwnd = CreateMainWindow(CLASS_NAME, APP_NAME, hInstance, width, height);
 	if (!hwnd)
 	{
-		MessageBoxW(nullptr, L"窗口创建失败。", L"win_pktmon", MB_ICONERROR);
+		MessageBoxW(nullptr, L"窗口创建失败。", APP_NAME, MB_ICONERROR);
 		return 1;
 	}
 
