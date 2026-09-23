@@ -6,8 +6,9 @@
 #pragma comment(lib, "dwmapi.lib")
 #include <shellscalingapi.h>
 #pragma comment(lib, "Shcore.lib")
+#include "MessageBox.hpp"
 
-inline HWND CreateMainWindow(LPCWSTR CLASS_NAME, LPCWSTR APP_NAME, HINSTANCE hInstance, int widthDip, int heightDip) {
+inline static HWND CreateMainWindow(LPCWSTR CLASS_NAME, LPCWSTR APP_NAME, HINSTANCE hInstance, int widthDip, int heightDip) {
 	SetProcessDpiAwareness(PROCESS_PER_MONITOR_DPI_AWARE);
 
 	auto DipToPixel = [](int dip, UINT dpi) {
@@ -55,7 +56,7 @@ inline HWND CreateMainWindow(LPCWSTR CLASS_NAME, LPCWSTR APP_NAME, HINSTANCE hIn
 	return hwnd;
 }
 
-inline WNDCLASSEXW CreateMainWNDCLASSEXW(LPCWSTR CLASS_NAME, HINSTANCE hInstance) {
+inline static WNDCLASSEXW CreateMainWNDCLASSEXW(LPCWSTR CLASS_NAME, HINSTANCE hInstance) {
 	WNDCLASSEXW wc{};
 
 	wc.cbSize = sizeof(wc);
@@ -68,7 +69,7 @@ inline WNDCLASSEXW CreateMainWNDCLASSEXW(LPCWSTR CLASS_NAME, HINSTANCE hInstance
 	wc.lpfnWndProc = [](HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT {
 		switch (uMsg) {
 		case WM_CLOSE:
-			if (MessageBoxW(hwnd, L"确定要退出程序吗？", L"提示", MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) == IDYES) {
+			if (AlertBox(L"确定退出程序？") == IDYES) {
 				DestroyWindow(hwnd);
 			}
 			return 0;

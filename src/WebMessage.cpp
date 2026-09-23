@@ -1,5 +1,7 @@
 #include "heard/WebMessage.h"
 #include "heard/AppLication.h"
+#include "../core/MessageBox.hpp"
+#include <thread>
 
 std::string WebMessage::WideToUtf8(const wchar_t* value) {
 	if (!value)
@@ -14,9 +16,7 @@ std::string WebMessage::WideToUtf8(const wchar_t* value) {
 	return result;
 }
 
-WebMessage::WebMessage(ComPtr<ICoreWebView2>& webview, AppLication& app)
-	: app(app) {
-
+WebMessage::WebMessage(ComPtr<ICoreWebView2>& webview, AppLication& app) : app(app) {
 	webview->add_WebMessageReceived(
 		Callback<ICoreWebView2WebMessageReceivedEventHandler>(
 			[this](ICoreWebView2*, ICoreWebView2WebMessageReceivedEventArgs* args) -> HRESULT {
@@ -29,12 +29,7 @@ WebMessage::WebMessage(ComPtr<ICoreWebView2>& webview, AppLication& app)
 						std::string jsonString = WideToUtf8(message);
 						nlohmann::json json = nlohmann::json::parse(jsonString);
 						Message message = json.get<Message>();
-						MessageBoxA(
-							this->app.GetHwnd(),
-							message.data.message.c_str(),
-							"WebMessage",
-							MB_OK
-						);
+						this->Handle(message);
 					}
 					catch (const nlohmann::json::exception& e) {
 						OutputDebugStringA(e.what());
@@ -48,4 +43,14 @@ WebMessage::WebMessage(ComPtr<ICoreWebView2>& webview, AppLication& app)
 		).Get(),
 		nullptr
 	);
+}
+
+void WebMessage::Handle(Message& message) {
+	std::thread([this, message]()
+		{
+			if (ToString(MessageEnum::Info) == message.type) {
+				AlertInfo(StringToWString(message.data.message).c_str());
+			}
+		}
+	).detach();
 }

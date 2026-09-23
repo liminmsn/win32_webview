@@ -1,3 +1,4 @@
+#pragma once
 #include <wrl.h>
 #include <WebView2.h>
 using Microsoft::WRL::Callback;

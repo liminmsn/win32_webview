@@ -1,12 +1,11 @@
 ﻿#include "global.h"
-#include "core/Window.h"
+#include "core/Window.hpp"
 #include "resources/resource.h"
 
-const wchar_t CLASS_NAME[] = L"WinPktmonWindow";
 const wchar_t APP_NAME[] = L"Pktmon抓包";
+const wchar_t CLASS_NAME[] = L"WinPktmonWindow";
 const int width = 900;
 const int height = 700;
-
 std::unique_ptr<AppLication> application;
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR, int nCmdShow)
 {
