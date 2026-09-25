@@ -1,6 +1,7 @@
 #include "heard/AppLication.h"
 #include "heard/Bridge.h"
 #include <iostream>
+#include "../core/MessageBox.hpp"
 
 std::unique_ptr<Bridge> bridge;
 AppLication::AppLication(HWND hwnd) : hwnd(hwnd) {}
@@ -14,6 +15,25 @@ void AppLication::Resize(int width, int height) {
 	if (!webViewController) return;
 	RECT bounds{ 0, 0, width, height };
 	webViewController->put_Bounds(bounds);
+}
+
+void AppLication::SendWebMessage(nlohmann::json& json)
+{
+	std::wstring message = WebViewMessageBridge::AnsiToWString(json.dump(), CP_UTF8);
+	HRESULT hr = webView->PostWebMessageAsJson(message.c_str());
+
+	if (FAILED(hr))
+	{
+		wchar_t buffer[64]{};
+
+		swprintf_s(
+			buffer,
+			L"PostWebMessageAsJson failed: 0x%08X",
+			static_cast<unsigned int>(hr)
+		);
+
+		AlertInfo(buffer);
+	}
 }
 
 bool AppLication::InitWebView() {

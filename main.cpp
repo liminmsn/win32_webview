@@ -5,7 +5,7 @@
 
 const wchar_t APP_NAME[] = L"好看韩剧5";
 const wchar_t CLASS_NAME[] = L"Hkhj5";
-const int width = 900;
+const int width = 1200;
 const int height = 700;
 std::unique_ptr<AppLication> application;
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR, int nCmdShow)

@@ -6,6 +6,7 @@
 #pragma comment(lib, "dwmapi.lib")
 #include <shellscalingapi.h>
 #pragma comment(lib, "Shcore.lib")
+#include <nlohmann/json.hpp>
 #include "../global.h"
 #include "MessageBox.hpp"
 
@@ -38,7 +39,7 @@ inline static HWND CreateMainWindow(LPCWSTR CLASS_NAME, LPCWSTR APP_NAME, HINSTA
 	if (!hwnd)
 		return nullptr;
 
-	DWM_SYSTEMBACKDROP_TYPE backdropType = DWMSBT_MAINWINDOW;
+	DWM_SYSTEMBACKDROP_TYPE backdropType = DWMSBT_TRANSIENTWINDOW;
 	DwmSetWindowAttribute(
 		hwnd,
 		DWMWA_SYSTEMBACKDROP_TYPE,
@@ -57,6 +58,8 @@ inline static HWND CreateMainWindow(LPCWSTR CLASS_NAME, LPCWSTR APP_NAME, HINSTA
 	return hwnd;
 }
 
+
+constexpr UINT WM_HTTP_RESPONSE = WM_APP + 10;
 inline static WNDCLASSEXW CreateMainWNDCLASSEXW(LPCWSTR CLASS_NAME, HINSTANCE hInstance) {
 	WNDCLASSEXW wc{};
 
@@ -82,9 +85,18 @@ inline static WNDCLASSEXW CreateMainWNDCLASSEXW(LPCWSTR CLASS_NAME, HINSTANCE hI
 		case WM_DESTROY:
 			PostQuitMessage(0);
 			return 0;
+		case WM_HTTP_RESPONSE:
+			auto* res = reinterpret_cast<nlohmann::json*>(lParam);
+			
+			application->SendWebMessage(*res);
+			
+			delete res;
+		
+			return 0;
 		}
 
 		return DefWindowProcW(hwnd, uMsg, wParam, lParam);
+
 		};
 
 	return wc;
