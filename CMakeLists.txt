@@ -36,3 +36,10 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
     $<$<CONFIG:Debug>:APP_DEVELOPMENT>
     $<$<CONFIG:Release>:APP_RELEASE>
 )
+
+# 统一基础名称
+set_target_properties(win32_webview PROPERTIES
+    OUTPUT_NAME "VectorWallpaper"
+    OUTPUT_NAME_DEBUG "VectorWallpaper_d"        # Debug 模式下输出 MyApp_d.exe
+    OUTPUT_NAME_RELEASE "VectorWallpaper"        # Release 模式下输出 MyApp.exe
+)

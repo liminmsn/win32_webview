@@ -3,45 +3,42 @@
 #include "core/Window.hpp"
 #include "global.h"
 
-const wchar_t APP_NAME[] = L"win32_webview";
-const wchar_t CLASS_NAME[] = L"win32_webview";
+const wchar_t APP_NAME[] = L"VectorWallpaper";
+const wchar_t CLASS_NAME[] = L"vector_wallpaper";
 const int width = 700;
 const int height = 600;
 std::unique_ptr<AppLication> application;
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR, int nCmdShow)
 {
+	CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
+
 	WNDCLASSEXW wc = CreateMainWNDCLASSEXW(CLASS_NAME, hInstance);
 	wc.hIcon = static_cast<HICON>(LoadImageW(hInstance, MAKEINTRESOURCEW(IDI_APP_ICON), IMAGE_ICON, 256, 256, LR_DEFAULTCOLOR));
 	wc.hIconSm = static_cast<HICON>(LoadImageW(hInstance, MAKEINTRESOURCEW(IDI_APP_ICON), IMAGE_ICON, 32, 32, LR_DEFAULTCOLOR));
-	if (!RegisterClassExW(&wc))
-	{
+
+	if (!RegisterClassExW(&wc)) {
 		MessageBoxW(nullptr, L"窗口类注册失败。", APP_NAME, MB_ICONERROR);
 		return 1;
 	}
 
-	HWND hwnd = CreateMainWindow(CLASS_NAME, APP_NAME, hInstance, width, height);
-	if (!hwnd)
-	{
+	HWND hwnd = CreateDesktopBackgroundWindow(CLASS_NAME, APP_NAME, hInstance);
+	if (!hwnd) {
 		MessageBoxW(nullptr, L"窗口创建失败。", APP_NAME, MB_ICONERROR);
 		return 1;
 	}
-
-	ShowWindow(hwnd, nCmdShow);
-	UpdateWindow(hwnd);
 
 	application = std::make_unique<AppLication>(hwnd);
 	application->InitWebView();
 
 	MSG msg{};
-	while (true)
-	{
+	while (true) {
 		BOOL result = GetMessageW(&msg, nullptr, 0, 0);
 		if (result == -1) return 1;
-		if (result == 0) break;
-
+		if (result == 0)  break;
 		TranslateMessage(&msg);
 		DispatchMessageW(&msg);
 	}
 
+	CoUninitialize();
 	return static_cast<int>(msg.wParam);
 }

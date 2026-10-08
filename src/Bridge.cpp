@@ -12,7 +12,7 @@ std::string Bridge::WideToUtf8(const wchar_t* value) {
 		return {};
 
 	std::string result(size - 1, '\0');
-	WideCharToMultiByte(CP_UTF8, 0, value, -1, result.data(), size, nullptr, nullptr);
+	WideCharToMultiByte(CP_UTF8, 0, value, -1, &result[0], size, nullptr, nullptr);
 	return result;
 }
 

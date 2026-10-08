@@ -51,7 +51,7 @@ bool AppLication::InitWebView() {
 
 							bridge = std::make_unique<Bridge>(this->webView, *this);
 #if APP_DEVELOPMENT
-							webView->Navigate(L"http://localhost:5173/");
+							webView->Navigate(L"http://localhost:7456/");
 #elif APP_RELEASE
 							webView->Navigate(L"https://www.baidu.com");
 #endif
