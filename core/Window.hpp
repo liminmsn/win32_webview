@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <Windows.h>
 #include <windowsx.h>
+#include <hwndControl/HwndControl.hpp>
 
 #include <dwmapi.h>
 #pragma comment(lib, "dwmapi.lib")
@@ -9,6 +10,8 @@
 #include <nlohmann/json.hpp>
 #include "../global.h"
 #include "MessageBox.hpp"
+
+
 
 inline static HWND CreateMainWindow(LPCWSTR CLASS_NAME, LPCWSTR APP_NAME, HINSTANCE hInstance, int widthDip, int heightDip) {
 	SetProcessDpiAwareness(PROCESS_PER_MONITOR_DPI_AWARE);
@@ -38,6 +41,8 @@ inline static HWND CreateMainWindow(LPCWSTR CLASS_NAME, LPCWSTR APP_NAME, HINSTA
 
 	if (!hwnd)
 		return nullptr;
+	SetPropW(hwnd, L"MinWidth", reinterpret_cast<HANDLE>(static_cast<LONG_PTR>(width)));
+	SetPropW(hwnd, L"MinHeight", reinterpret_cast<HANDLE>(static_cast<LONG_PTR>(height)));
 
 	DWM_SYSTEMBACKDROP_TYPE backdropType = DWMSBT_TRANSIENTWINDOW;
 	DwmSetWindowAttribute(
@@ -55,11 +60,12 @@ inline static HWND CreateMainWindow(LPCWSTR CLASS_NAME, LPCWSTR APP_NAME, HINSTA
 	);
 	MARGINS margins = { 0, 0, 0, 0 };
 	DwmExtendFrameIntoClientArea(hwnd, &margins);
+	HwndControl::Init(hwnd);
 	return hwnd;
 }
 
 
-constexpr UINT WM_HTTP_RESPONSE = WM_APP + 10;
+constexpr UINT WM_WEBVIEW_RESPONSE = WM_APP + 10;
 inline static WNDCLASSEXW CreateMainWNDCLASSEXW(LPCWSTR CLASS_NAME, HINSTANCE hInstance) {
 	WNDCLASSEXW wc{};
 
@@ -77,6 +83,13 @@ inline static WNDCLASSEXW CreateMainWNDCLASSEXW(LPCWSTR CLASS_NAME, HINSTANCE hI
 				DestroyWindow(hwnd);
 			}
 			return 0;
+		case WM_GETMINMAXINFO:
+		{
+			auto* info = reinterpret_cast<MINMAXINFO*>(lParam);
+			info->ptMinTrackSize.x = static_cast<LONG>(reinterpret_cast<LONG_PTR>(GetPropW(hwnd, L"MinWidth")));
+			info->ptMinTrackSize.y = static_cast<LONG>(reinterpret_cast<LONG_PTR>(GetPropW(hwnd, L"MinHeight")));
+			return 0;
+		}
 		case WM_SIZE:
 			if (application) {
 				application->Resize(LOWORD(lParam), HIWORD(lParam));
@@ -85,16 +98,12 @@ inline static WNDCLASSEXW CreateMainWNDCLASSEXW(LPCWSTR CLASS_NAME, HINSTANCE hI
 		case WM_DESTROY:
 			PostQuitMessage(0);
 			return 0;
-		case WM_HTTP_RESPONSE:
+		case WM_WEBVIEW_RESPONSE:
 			auto* res = reinterpret_cast<nlohmann::json*>(lParam);
-			
 			application->SendWebMessage(*res);
-			
 			delete res;
-		
 			return 0;
 		}
-
 		return DefWindowProcW(hwnd, uMsg, wParam, lParam);
 
 		};

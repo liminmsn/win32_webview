@@ -33,39 +33,21 @@ Bridge::Bridge(ComPtr<ICoreWebView2>& webview, AppLication& app) :webview(webvie
 	);
 }
 
-//void Bridge::SendWebMessage(nlohmann::json& json)
-//{
-//	std::wstring message = WebViewMessageBridge::AnsiToWString(json.dump(), CP_UTF8);
-//	HRESULT hr = this->app.GetWebView()->PostWebMessageAsJson(message.c_str());
-//
-//	if (FAILED(hr))
-//	{
-//		wchar_t buffer[64]{};
-//
-//		swprintf_s(
-//			buffer,
-//			L"PostWebMessageAsJson failed: 0x%08X",
-//			static_cast<unsigned int>(hr)
-//		);
-//
-//		AlertInfo(buffer);
-//	}
-//}
-
 void Bridge::Handle(WebViewMessageBridge::Message& message)
 {
 	using namespace WebViewMessageBridge;
-
+	HWND hwnd = this->app.GetHwnd();
 	switch (MessageEnumFromString(message.type))
 	{
-	case MessageEnum::Info:
+	case MessageEnum::Unknown:
 		AlertInfo(StringToWString(message.value).c_str());
 		break;
-
 	case MessageEnum::Http:
 	{
-		std::thread([this, message]() {
+		std::thread([this, message, hwnd]() {
 			std::string url = message.value["url"].get<std::string>();
+			std::string method = message.value["method"].get<std::string>();
+
 			std::map<std::wstring, std::wstring> headers;
 			for (const auto& [name, value] : message.value["headers"].items())
 			{
@@ -73,9 +55,16 @@ void Bridge::Handle(WebViewMessageBridge::Message& message)
 			}
 
 			HttpClient::HttpClient http{};
-			if (http.Init(L"", StringToWString(url)))
+
+			if (http.Init(L"localhost", StringToWString(url)))
 			{
-				http.SetHeaders(headers).Get();
+				if (message.value.contains("body")) {
+					const std::string body = message.value["body"].get<std::string>();
+					http.Request(StringToWString(method), body);
+				}
+				else {
+					http.Request(StringToWString(method));
+				}
 
 				DWORD status = http.GetStateCode();
 				std::string body = http.Send();
@@ -87,15 +76,30 @@ void Bridge::Handle(WebViewMessageBridge::Message& message)
 					{"body", body}
 				};
 
-				PostMessageW(
-					this->app.GetHwnd(),
-					WM_HTTP_RESPONSE,
-					0,
-					reinterpret_cast<LPARAM>(res)
-				);
+				PostMessageW(hwnd, WM_WEBVIEW_RESPONSE, 0, reinterpret_cast<LPARAM>(res));
 			}
+			}
+		).detach();
+		break;
+	}
+	case MessageEnum::Client:
+	{
 
-			}).detach();
+		const std::string type = message.value["type"].get<std::string>();
+		if (type == "IsFullscreen") {
+			const bool res = HwndControl::IsFullscreen(hwnd);
+
+			PostMessageW(
+				hwnd,
+				WM_WEBVIEW_RESPONSE,
+				static_cast<WPARAM>(res),
+				0
+			);
+
+			return;
+		}
+
+		HwndControl::Call(hwnd, type.c_str());
 		break;
 	}
 	}

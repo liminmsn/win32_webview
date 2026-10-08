@@ -14,6 +14,11 @@ endif()
 find_package(nlohmann_json CONFIG REQUIRED)
 find_package(unofficial-webview2 CONFIG REQUIRED)
 
+
+add_subdirectory(
+    E:/source/HwndControl
+    ${CMAKE_CURRENT_BINARY_DIR}/HwndControl
+)
 add_subdirectory(
     E:/source/HttpClient
     ${CMAKE_CURRENT_BINARY_DIR}/HttpClient
@@ -41,6 +46,7 @@ target_link_libraries(win32_webview PRIVATE
     unofficial::webview2::webview2
     WebViewMessageBridge
     HttpClient
+    HwndControl
 )
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE

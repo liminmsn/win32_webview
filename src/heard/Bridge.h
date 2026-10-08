@@ -5,6 +5,8 @@
 #include <nlohmann/json.hpp>
 #include <webViewMessageBredge/WebViewMessageBridge.hpp>
 #include <httpClient/HttpClient.hpp>
+#include <hwndControl/HwndControl.hpp>
+
 using Microsoft::WRL::Callback;
 using Microsoft::WRL::ComPtr;
 
