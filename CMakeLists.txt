@@ -32,6 +32,11 @@ target_link_libraries(win32_webview PRIVATE
     unofficial::webview2::webview2
 )
 
+set(OUTPUT_NAME "McpClient")
+set_target_properties(win32_webview PROPERTIES
+    OUTPUT_NAME "$<IF:$<CONFIG:Debug>,${OUTPUT_NAME}_debug,${OUTPUT_NAME}>"
+)
+
 target_compile_definitions(${PROJECT_NAME} PRIVATE
     $<$<CONFIG:Debug>:APP_DEVELOPMENT>
     $<$<CONFIG:Release>:APP_RELEASE>

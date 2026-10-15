@@ -3,10 +3,10 @@
 #include "core/Window.hpp"
 #include "global.h"
 
-const wchar_t APP_NAME[] = L"win32_webview";
-const wchar_t CLASS_NAME[] = L"win32_webview";
-const int width = 700;
-const int height = 600;
+const wchar_t APP_NAME[] = L"mcp客户端";
+const wchar_t CLASS_NAME[] = L"mcp_webview";
+const int width = 900;
+const int height = 700;
 std::unique_ptr<AppLication> application;
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR, int nCmdShow)
 {
