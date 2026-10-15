@@ -1,0 +1,9 @@
+::-webkit-scrollbar {
+  appearance: none;
+  width: 4pt;
+  background: var(--t_1);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--t_0);
+}

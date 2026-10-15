@@ -1,0 +1,17 @@
+@import "./webkit-scrollbar.css";
+@import "./card.css";
+@import "./button.css";
+
+:root {
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  text-size-adjust: unset;
+  box-sizing: border-box;
+  --t_0: #D98327;
+  --t_1: #ECE8AF;
+  --t_2: #4A943E;
+  --t_3: #186049;
+}
+
+#root {
+  height: 100svh;
+}

@@ -1,0 +1,5 @@
+button {
+    @apply rounded-sm px-3 py-1 hover:scale-95 cursor-pointer active:scale-100;
+    color: var(--t_0);
+    background: var(--t_1);
+}

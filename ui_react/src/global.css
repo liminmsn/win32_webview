@@ -1,17 +1,2 @@
-:root {
-  box-sizing: border-box;
-  --t: #000;
-}
-body{margin: 0;}
-::-webkit-scrollbar {
-  appearance: none;
-  width: 4pt;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--t);
-}
-
-#root {
-  min-height: 100svh;
-}
+@import 'tailwindcss';
+@import "./styles/root.css";

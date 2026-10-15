@@ -1,0 +1,5 @@
+.card {
+    @apply rounded-sm px-3 py-1;
+    color: var(--t_1);
+    background: var(--t_3);
+}
