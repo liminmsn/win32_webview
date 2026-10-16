@@ -38,7 +38,7 @@ inline static HWND CreateMainWindow(LPCWSTR CLASS_NAME, LPCWSTR APP_NAME, HINSTA
 	if (!hwnd)
 		return nullptr;
 
-	DWM_SYSTEMBACKDROP_TYPE backdropType = DWMSBT_MAINWINDOW;
+	DWM_SYSTEMBACKDROP_TYPE backdropType = DWMSBT_TRANSIENTWINDOW;
 	DwmSetWindowAttribute(
 		hwnd,
 		DWMWA_SYSTEMBACKDROP_TYPE,
