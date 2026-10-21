@@ -17,7 +17,10 @@ void AppLication::Resize(int width, int height) {
 }
 
 bool AppLication::InitWebView() {
-	HRESULT hr = CreateCoreWebView2EnvironmentWithOptions(nullptr, nullptr, nullptr,
+	HRESULT hr = CreateCoreWebView2EnvironmentWithOptions(
+		nullptr,
+		nullptr,
+		nullptr,
 		Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
 			[this](HRESULT result, ICoreWebView2Environment* environment) -> HRESULT {
 				if (FAILED(result) || !environment)
